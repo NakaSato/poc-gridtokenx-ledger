@@ -108,6 +108,7 @@ pub struct CongestionManagement {
 }
 
 // Smart Contract Functions (would be implemented as substrate pallets)
+#[allow(dead_code)]
 impl EnergyTradingContract {
     pub fn new(
         contract_id: String,
@@ -197,8 +198,10 @@ impl EnergyTradingContract {
 }
 
 // Factory for creating common contract templates
+#[allow(dead_code)]
 pub struct ContractFactory;
 
+#[allow(dead_code)]
 impl ContractFactory {
     pub fn create_residential_trading_contract(
         participants: Vec<String>,

@@ -142,6 +142,7 @@ impl TokenSystem {
         Ok(record.transaction_id)
     }
 
+    #[allow(dead_code)]
     pub fn burn_watt_tokens(&mut self, user_address: &str, watt_amount: f64) -> Result<String, String> {
         if watt_amount <= 0.0 {
             return Err("WATT amount must be positive".to_string());
@@ -179,6 +180,7 @@ impl TokenSystem {
         Ok(record.transaction_id)
     }
 
+    #[allow(dead_code)]
     pub fn stake_grid_tokens(&mut self, user_address: &str, amount: f64) -> Result<(), String> {
         if amount <= 0.0 {
             return Err("Stake amount must be positive".to_string());
@@ -198,6 +200,7 @@ impl TokenSystem {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn unstake_grid_tokens(&mut self, user_address: &str, amount: f64) -> Result<(), String> {
         if amount <= 0.0 {
             return Err("Unstake amount must be positive".to_string());
@@ -217,6 +220,7 @@ impl TokenSystem {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn calculate_staking_rewards(&self, user_address: &str) -> Result<f64, String> {
         let user_balance = self.user_balances.get(user_address)
             .ok_or("User account not found")?;
@@ -232,6 +236,7 @@ impl TokenSystem {
         Ok(rewards)
     }
 
+    #[allow(dead_code)]
     pub fn claim_staking_rewards(&mut self, user_address: &str) -> Result<f64, String> {
         let rewards = self.calculate_staking_rewards(user_address)?;
 
@@ -245,6 +250,7 @@ impl TokenSystem {
         Ok(rewards)
     }
 
+    #[allow(dead_code)]
     pub fn create_governance_proposal(
         &mut self,
         proposer: &str,
@@ -276,6 +282,7 @@ impl TokenSystem {
         Ok(proposal_id)
     }
 
+    #[allow(dead_code)]
     pub fn vote_on_proposal(
         &mut self,
         voter: &str,

@@ -19,10 +19,6 @@ name = "ledger"
 path = "src/main.rs"
 
 [[example]]
-name = "api_client_demo"
-path = "examples/api_client_demo.rs"
-
-[[example]]
 name = "token_system_demo"
 path = "examples/token_system_demo.rs"
 
@@ -41,12 +37,13 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 uuid = { version = "1.0", features = ["serde", "v4"] }
 
-# HTTP client for examples
-reqwest = { version = "0.11", features = ["json"] }
-
 # Local pallet (standalone version)
 pallet-token-system = { path = "pallets/token-system" }
 pallet-energy-trading = { path = "pallets/energy-trading" }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tokio = { version = "1.0", features = ["full"] }
 
 [features]
 default = ["std"]
@@ -77,3 +74,7 @@ rate-limiting = ["pallet-energy-trading/rate-limiting"]
 performance-optimized = ["pallet-energy-trading/performance-optimized"]
 memory-efficient = ["pallet-energy-trading/memory-efficient"]
 batch-processing = ["pallet-energy-trading/batch-processing"]
+
+[[bench]]
+name = "performance_benchmark"
+harness = false

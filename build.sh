@@ -60,10 +60,9 @@ cargo clippy -- -W clippy::all || {
 }
 
 print_info "Available commands:"
-echo "  cargo run --bin api-server      # Start the API server"
-echo "  cargo run --bin ledger          # Run the CLI demo"
-echo "  cargo run --example api_client_demo  # Test the API"
-echo "  ./test_api.sh                   # Run API tests"
-echo "  open api_demo.html              # Open the web demo"
+echo "  cargo run --bin ledger               # Run the CLI demo"
+echo "  cargo run --example token_system_demo     # Test the token system"
+echo "  cargo run --example energy_trading_demo   # Test energy trading"
+echo "  cargo run --example simple_feature_demo   # Test simple features"
 
 print_status "Build script completed successfully!"

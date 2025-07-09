@@ -89,8 +89,4 @@ impl Transaction {
             transaction_type,
         }
     }
-
-    pub fn calculate_total_cost(&self) -> f64 {
-        self.energy_amount * self.price_per_kwh
-    }
 }

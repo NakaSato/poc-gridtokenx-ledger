@@ -55,23 +55,6 @@ impl Blockchain {
         self.pending_transactions.push(transaction);
     }
 
-    pub fn get_balance(&self, address: &str) -> f64 {
-        let mut balance = 0.0;
-
-        for block in &self.chain {
-            for transaction in &block.transactions {
-                if transaction.from == address {
-                    balance -= transaction.calculate_total_cost();
-                }
-                if transaction.to == address {
-                    balance += transaction.calculate_total_cost();
-                }
-            }
-        }
-
-        balance
-    }
-
     pub fn get_energy_balance(&self, address: &str) -> f64 {
         let mut energy_balance = 0.0;
 
@@ -110,19 +93,6 @@ impl Blockchain {
         true
     }
 
-    pub fn get_transactions_for_address(&self, address: &str) -> Vec<&Transaction> {
-        let mut transactions = Vec::new();
-
-        for block in &self.chain {
-            for transaction in &block.transactions {
-                if transaction.from == address || transaction.to == address {
-                    transactions.push(transaction);
-                }
-            }
-        }
-
-        transactions
-    }
 }
 
 impl Default for Blockchain {
