@@ -1,6 +1,6 @@
 use crate::block::{Transaction, TransactionType};
 use serde::{Deserialize, Serialize};
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -74,32 +74,26 @@ impl EnergyMarket {
         
         match order.order_type {
             OrderType::Buy => {
-                // Insert buy order in descending price order (highest price first)
-                let mut inserted = false;
+                // Find the correct position to insert the buy order (highest price first)
+                let mut position = self.buy_orders.len();
                 for (i, existing_order) in self.buy_orders.iter().enumerate() {
                     if order.price_per_kwh > existing_order.price_per_kwh {
-                        self.buy_orders.insert(i, order);
-                        inserted = true;
+                        position = i;
                         break;
                     }
                 }
-                if !inserted {
-                    self.buy_orders.push_back(order);
-                }
+                self.buy_orders.insert(position, order);
             }
             OrderType::Sell => {
-                // Insert sell order in ascending price order (lowest price first)
-                let mut inserted = false;
+                // Find the correct position to insert the sell order (lowest price first)
+                let mut position = self.sell_orders.len();
                 for (i, existing_order) in self.sell_orders.iter().enumerate() {
                     if order.price_per_kwh < existing_order.price_per_kwh {
-                        self.sell_orders.insert(i, order);
-                        inserted = true;
+                        position = i;
                         break;
                     }
                 }
-                if !inserted {
-                    self.sell_orders.push_back(order);
-                }
+                self.sell_orders.insert(position, order);
             }
         }
 
@@ -119,10 +113,13 @@ impl EnergyMarket {
                 break;
             }
 
-            // Calculate trade details
+            // Calculate trade details - 1 kWh = 1 token base conversion
             let trade_amount = buy_order.energy_amount.min(sell_order.energy_amount);
             let trade_price = sell_order.price_per_kwh; // Use ask price
-            let base_cost = trade_amount * trade_price;
+            
+            // Base cost: 1 kWh = 1 token, then multiply by price multiplier
+            let base_tokens = trade_amount; // 1:1 conversion kWh to tokens
+            let base_cost = base_tokens * trade_price; // Apply price multiplier
             let grid_fee = base_cost * self.grid_fee_rate;
             let total_cost = base_cost + grid_fee;
 
@@ -242,12 +239,70 @@ impl Prosumer {
     pub fn can_afford(&self, cost: f64) -> bool {
         self.watt_tokens >= cost
     }
+
+    // 1 kWh = 1 token conversion methods
+    pub fn get_energy_tokens(&self) -> f64 {
+        // Convert net energy to tokens (1 kWh = 1 token)
+        self.get_net_energy()
+    }
+
+    pub fn get_sellable_energy_tokens(&self) -> f64 {
+        // Only positive net energy can be sold (converted to tokens)
+        self.get_net_energy().max(0.0)
+    }
+
+    pub fn get_required_energy_tokens(&self) -> f64 {
+        // Negative net energy means we need to buy (in tokens)
+        (-self.get_net_energy()).max(0.0)
+    }
+
+    pub fn convert_energy_to_watt_tokens(&mut self, kwh: f64, price_per_kwh: f64) -> f64 {
+        // Convert energy to WATT tokens: 1 kWh = 1 base token * price
+        let base_tokens = kwh; // 1:1 conversion
+        let watt_tokens = base_tokens * price_per_kwh;
+        self.watt_tokens += watt_tokens;
+        watt_tokens
+    }
+
+    pub fn spend_watt_tokens_for_energy(&mut self, kwh: f64, price_per_kwh: f64) -> Result<f64, String> {
+        // Spend WATT tokens to get energy: 1 kWh = 1 base token * price
+        let base_tokens = kwh; // 1:1 conversion
+        let required_watt_tokens = base_tokens * price_per_kwh;
+        
+        if self.watt_tokens >= required_watt_tokens {
+            self.watt_tokens -= required_watt_tokens;
+            Ok(required_watt_tokens)
+        } else {
+            Err("Insufficient WATT tokens".to_string())
+        }
+    }
 }
 
 impl Default for EnergyMarket {
     fn default() -> Self {
         Self::new()
     }
+}
+
+// Energy to Token Conversion Functions (1 kWh = 1 token)
+pub fn energy_to_tokens(kwh: f64) -> f64 {
+    kwh // Direct 1:1 conversion
+}
+
+pub fn tokens_to_energy(tokens: f64) -> f64 {
+    tokens // Direct 1:1 conversion
+}
+
+pub fn calculate_token_cost(energy_kwh: f64, price_multiplier: f64) -> f64 {
+    // 1 kWh = 1 base token, then apply price multiplier
+    let base_tokens = energy_to_tokens(energy_kwh);
+    base_tokens * price_multiplier
+}
+
+pub fn calculate_energy_from_tokens(tokens: f64, price_multiplier: f64) -> f64 {
+    // Reverse calculation: how much energy can you get for tokens
+    let base_tokens = tokens / price_multiplier;
+    tokens_to_energy(base_tokens)
 }
 
 // Utility functions for energy trading
