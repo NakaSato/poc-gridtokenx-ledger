@@ -3,9 +3,41 @@ name = "ledger"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = [
+    ".",
+    "pallets/token-system",
+]
+
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 sha2 = "0.10"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 uuid = { version = "1.0", features = ["serde", "v4"] }
+
+# Substrate dependencies (for future integration)
+codec = { package = "parity-scale-codec", version = "3.6.1", default-features = false, features = ["derive"], optional = true }
+frame-support = { version = "4.0.0-dev", default-features = false, optional = true }
+frame-system = { version = "4.0.0-dev", default-features = false, optional = true }
+sp-runtime = { version = "24.0.0", default-features = false, optional = true }
+
+# Local pallet
+pallet-token-system = { path = "pallets/token-system", default-features = false, optional = true }
+
+[features]
+default = ["std"]
+std = [
+    "codec?/std",
+    "frame-support?/std",
+    "frame-system?/std",
+    "sp-runtime?/std",
+    "pallet-token-system?/std",
+]
+substrate = [
+    "codec",
+    "frame-support",
+    "frame-system",
+    "sp-runtime",
+    "pallet-token-system",
+]
