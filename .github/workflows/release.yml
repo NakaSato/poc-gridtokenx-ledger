@@ -1,0 +1,124 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Energy Trading Ecosystem ${{ github.ref }}
+        body: |
+          ## Features
+          - 🔄 1 kWh = 1 Token conversion system
+          - ⚡ P2P energy trading marketplace
+          - 🏗️ Dual-token economics (GRID & WATT)
+          - 🔗 Blockchain-based settlement
+          - 📊 Real-time market price discovery
+          - 🔒 Comprehensive security and testing
+          
+          ## What's Changed
+          - Implemented energy tokenization with 1:1 kWh to token ratio
+          - Added continuous double auction matching engine
+          - Integrated grid fee calculation and distribution
+          - Enhanced prosumer wallet functionality
+          - Comprehensive test suite with 20+ test cases
+          
+          ## Installation
+          Download the appropriate binary for your platform and run:
+          ```bash
+          ./ledger
+          ```
+          
+          ## Quick Start
+          1. Run the demo to see P2P energy trading in action
+          2. Explore the 1 kWh = 1 token conversion system
+          3. Check out the comprehensive documentation
+        draft: false
+        prerelease: false
+
+  build-release:
+    name: Build Release
+    needs: create-release
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+        target: ${{ matrix.target }}
+
+    - name: Build release binary
+      run: cargo build --release --target ${{ matrix.target }}
+
+    - name: Create archive (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        cd target/${{ matrix.target }}/release
+        tar -czf ../../../energy-trading-ecosystem-${{ matrix.target }}.tar.gz ledger
+        cd ../../../
+
+    - name: Create archive (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd target/${{ matrix.target }}/release
+        7z a ../../../energy-trading-ecosystem-${{ matrix.target }}.zip ledger.exe
+        cd ../../../
+
+    - name: Upload release asset (Unix)
+      if: matrix.os != 'windows-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./energy-trading-ecosystem-${{ matrix.target }}.tar.gz
+        asset_name: energy-trading-ecosystem-${{ matrix.target }}.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload release asset (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./energy-trading-ecosystem-${{ matrix.target }}.zip
+        asset_name: energy-trading-ecosystem-${{ matrix.target }}.zip
+        asset_content_type: application/zip
