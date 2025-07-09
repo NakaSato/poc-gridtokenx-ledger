@@ -1,7 +1,7 @@
 //! # Token System Pallet (Standalone Version)
 //!
 //! A comprehensive token system for energy trading ecosystems featuring:
-//! - GRID token: Utility/governance token with staking capabilities
+//! - GRID token: Utility/governance token with staking capabilities  
 //! - WATT token: Fiat-pegged stablecoin for energy trading
 //! - Governance system with proposal creation and voting
 //! - Staking rewards and price stability mechanisms
@@ -79,6 +79,19 @@ pub struct Proposal {
     pub votes_against: Balance,
     /// Proposal status
     pub status: ProposalStatus,
+}
+
+/// Vote information
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Vote {
+    /// Voter account
+    pub voter: AccountId,
+    /// Proposal ID
+    pub proposal_id: ProposalId,
+    /// Support for the proposal
+    pub support: bool,
+    /// Voting power used
+    pub voting_power: Balance,
 }
 
 /// Proposal status
