@@ -2,8 +2,18 @@
 /// 
 /// This example shows how to configure the Energy Trading Pallet with different feature sets
 
-use pallet_energy_trading::{
-    EnergyTradingSystem, EnergyTradingConfig, EnergyTradingConfigBuilder,
+use    // Test market statistics (if enabled)
+    if FeatureCapabilities::has_market_statistics() {
+        println!("   📊 Testing Market Statistics...");
+        
+        let stats = energy_trading.get_statistics();
+        println!("      • Total trades: {}", stats.trades_count);
+        println!("      • Total volume: {} WATT", stats.total_volume);
+        println!("      • Buy orders: {}", stats.buy_orders_count);
+        println!("      • Sell orders: {}", stats.sell_orders_count);
+        println!("      • Total energy traded: {} centi-kWh", stats.total_energy_traded);
+    }rgy_trading::{
+    EnergyTradingSystem, EnergyTradingConfigBuilder,
     FeatureCapabilities, OrderType, ProsumerType
 };
 use pallet_token_system::{TokenSystem, TokenSystemConfig};
@@ -83,7 +93,7 @@ fn main() {
         println!("   🏠 Testing Prosumer Management...");
         
         // Give Alice some WATT tokens
-        token_system.mint_watt("alice", 1000).unwrap();
+        token_system.mint_watt(&"alice".to_string(), 1000).unwrap();
         
         // Register Alice as a prosumer
         energy_trading.register_prosumer(
@@ -96,8 +106,8 @@ fn main() {
         
         // Test energy tracking (if enabled)
         if FeatureCapabilities::has_energy_tracking() {
-            energy_trading.generate_energy("alice", 1000).unwrap(); // 10 kWh
-            energy_trading.consume_energy("alice", 500).unwrap();   // 5 kWh
+            energy_trading.generate_energy(&"alice".to_string(), 1000).unwrap(); // 10 kWh
+            energy_trading.consume_energy(&"alice".to_string(), 500).unwrap();   // 5 kWh
             println!("      ✅ Energy generation/consumption tracked");
         }
     }
@@ -107,7 +117,7 @@ fn main() {
         println!("   📊 Testing Order Book...");
         
         // Give Bob some WATT tokens
-        token_system.mint_watt("bob", 1000).unwrap();
+        token_system.mint_watt(&"bob".to_string(), 1000).unwrap();
         
         // Register Bob as a prosumer
         energy_trading.register_prosumer(
@@ -137,48 +147,23 @@ fn main() {
     
     // Test market statistics (if enabled)
     if FeatureCapabilities::has_market_statistics() {
-        println!("   📈 Testing Market Statistics...");
+        println!("   � Testing Market Statistics...");
         
-        let stats = &energy_trading.statistics;
-        println!("      • Active orders: {}", stats.active_orders_count);
-        println!("      • Buy orders: {}", stats.buy_orders_count);
-        println!("      • Sell orders: {}", stats.sell_orders_count);
-        println!("      • Total trades: {}", stats.trades_count);
-        
-        // Test enhanced statistics (if enabled)
-        #[cfg(feature = "market-statistics")]
-        {
-            let enhanced_stats = energy_trading.get_enhanced_statistics();
-            println!("      • Enhanced statistics available");
-            if let Some(avg_size) = enhanced_stats.average_trade_size {
-                println!("      • Average trade size: {} centi-kWh", avg_size);
-            }
-        }
+        let stats = energy_trading.get_statistics();
+        println!("      • Total trades: {}", stats.total_trades);
+        println!("      • Total volume: {} WATT", stats.total_volume);
+        println!("      • Buy orders: {}", stats.buy_orders);
+        println!("      • Sell orders: {}", stats.sell_orders);
+        println!("      • Total grid fees: {} WATT", stats.total_grid_fees);
     }
     
     // Test grid fees (if enabled)
     if FeatureCapabilities::has_grid_fees() {
         println!("   💰 Testing Grid Fees...");
         
-        let fee = energy_trading.calculate_advanced_grid_fees(
-            1000, // 10 kWh
-            10000, // 1.0 WATT per kWh
-            Some(5.0), // 5 km distance
-            Some(1.2), // 20% congestion
-        );
-        
-        println!("      • Grid fee with distance/congestion: {} WATT", fee);
-    }
-    
-    // Test access control (if enabled)
-    if FeatureCapabilities::has_access_control() {
-        println!("   🔐 Testing Access Control...");
-        
-        energy_trading.set_market_operator("operator".to_string()).unwrap();
-        println!("      ✅ Market operator set");
-        
-        energy_trading.emergency_halt(&"operator".to_string()).unwrap();
-        println!("      ✅ Emergency halt executed");
+        let total_fees = energy_trading.get_total_grid_fees();
+        println!("      • Total grid fees collected: {} WATT", total_fees);
+        println!("      • Current grid fee rate: {}%", custom_config.grid_fee_rate as f64 / 100.0);
     }
     
     println!("\n🎉 Feature Configuration Demo Complete!");
