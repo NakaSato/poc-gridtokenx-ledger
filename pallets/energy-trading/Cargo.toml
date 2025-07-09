@@ -1,0 +1,62 @@
+[package]
+name = "pallet-energy-trading"
+version = "0.1.0"
+edition = "2021"
+authors = ["Decentralized Energy Trading Team"]
+description = "Energy Trading Pallet for Substrate-compatible ecosystems with order book, CDA matching, and P2P trading"
+license = "MIT"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "2.0.12"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Local dependencies
+pallet-token-system = { path = "../token-system" }
+
+[dev-dependencies]
+# For testing
+tokio = { version = "1.0", features = ["full"] }
+
+[features]
+default = ["std", "order-book", "grid-fees", "prosumer-management", "market-statistics"]
+std = []
+
+# Core Trading Features
+order-book = []                    # Enable order book management and trading
+cda-matching = ["order-book"]      # Continuous Double Auction matching algorithm
+partial-fills = ["order-book"]     # Allow partial order fills
+order-cancellation = ["order-book"] # Enable order cancellation
+
+# Market Features
+grid-fees = []                     # Enable grid fee calculation and collection
+market-statistics = []             # Enable market analytics and statistics
+price-discovery = ["order-book"]   # Dynamic market pricing
+trade-history = []                 # Store complete trade history
+
+# Prosumer Management
+prosumer-management = []           # Enable prosumer registration and tracking
+energy-tracking = ["prosumer-management"] # Track energy generation/consumption
+net-energy-calc = ["prosumer-management"] # Calculate net energy balance
+
+# Advanced Features
+governance-integration = []        # Integration with governance system
+escrow-system = ["order-book"]     # Secure escrow for trade settlement
+multi-token = []                   # Support for multiple token types (future)
+cross-chain = []                   # Cross-chain trading support (future)
+
+# Development and Testing
+testing-utils = []                 # Additional testing utilities
+mock-data = []                     # Mock data generation for testing
+benchmarking = []                  # Performance benchmarking tools
+
+# Security Features
+access-control = []                # Enhanced access control mechanisms
+audit-logging = []                 # Comprehensive audit logging
+rate-limiting = []                 # Rate limiting for API calls
+
+# Optimization Features
+performance-optimized = []         # Performance optimizations
+memory-efficient = []              # Memory usage optimizations
+batch-processing = []              # Batch order processing

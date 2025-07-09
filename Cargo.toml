@@ -7,7 +7,16 @@ edition = "2021"
 members = [
     ".",
     "pallets/token-system",
+    "pallets/energy-trading",
 ]
+
+[[example]]
+name = "token_system_demo"
+path = "examples/token_system_demo.rs"
+
+[[example]]
+name = "energy_trading_demo"
+path = "examples/energy_trading_demo_fixed.rs"
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
@@ -18,3 +27,4 @@ uuid = { version = "1.0", features = ["serde", "v4"] }
 
 # Local pallet (standalone version)
 pallet-token-system = { path = "pallets/token-system" }
+pallet-energy-trading = { path = "pallets/energy-trading" }
