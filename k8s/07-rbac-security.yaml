@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: thai-energy-service-account
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: rbac
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: thai-energy-role
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: rbac
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: thai-energy-role-binding
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: rbac
+subjects:
+- kind: ServiceAccount
+  name: thai-energy-service-account
+  namespace: thai-energy-trading
+roleRef:
+  kind: Role
+  name: thai-energy-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: thai-energy-validator-pdb
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: validator
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: thai-energy-trading
+      component: validator
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: thai-energy-api-pdb
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: api-server
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: thai-energy-trading
+      component: api-server
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: thai-energy-network-policy
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: security
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: thai-energy-trading
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+  - ports:
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9944
+    - protocol: TCP
+      port: 30333
+  egress:
+  - {}  # Allow all outbound traffic

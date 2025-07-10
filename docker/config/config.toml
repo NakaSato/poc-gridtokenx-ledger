@@ -1,0 +1,71 @@
+# Thai Energy Trading System Configuration
+
+# Network Configuration
+[network]
+listen_addr = "0.0.0.0:30333"
+public_addr = "127.0.0.1:30333"
+node_key_file = "/app/data/node.key"
+chain_spec_path = "/app/config/thai_energy_chain_spec.json"
+
+# API Configuration
+[api]
+http_addr = "0.0.0.0:8080"
+ws_addr = "0.0.0.0:9944"
+cors_origins = ["*"]
+max_connections = 1000
+
+# Database Configuration
+[database]
+path = "/app/data/db"
+cache_size = "1GB"
+pruning = "archive"
+
+# Consensus Configuration
+[consensus]
+algorithm = "aura"
+block_time = 6000  # 6 seconds in milliseconds
+finality_grandpa = true
+
+# Energy Trading Configuration
+[energy_trading]
+grid_fee_rate = 0.01  # 1%
+min_trade_amount = 0.1  # kWh
+max_trade_amount = 10000.0  # kWh
+order_expiry = 86400  # 24 hours in seconds
+
+# Token System Configuration
+[token_system]
+native_token = "GRID"
+stablecoin = "WATT"
+min_stake_amount = 10000
+governance_voting_period = 604800  # 7 days
+
+# Logging Configuration
+[logging]
+level = "info"
+file_path = "/app/logs/thai_energy.log"
+max_file_size = "100MB"
+max_files = 10
+format = "json"
+
+# Telemetry Configuration
+[telemetry]
+enabled = true
+url = "wss://telemetry.polkadot.io/submit/"
+verbosity = 0
+
+# Oracle Configuration
+[oracle]
+enabled = true
+providers = [
+    "weather_api",
+    "grid_data_api", 
+    "market_price_api"
+]
+update_interval = 60  # seconds
+
+# Security Configuration
+[security]
+max_peers = 50
+reserved_nodes = []
+bootnodes = []

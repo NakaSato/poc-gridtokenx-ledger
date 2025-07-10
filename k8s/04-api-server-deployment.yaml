@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thai-energy-api-server
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: api-server
+    tier: application
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: thai-energy-trading
+      component: api-server
+  template:
+    metadata:
+      labels:
+        app: thai-energy-trading
+        component: api-server
+        tier: application
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: api-server
+        image: thai-energy-trading:latest
+        imagePullPolicy: Always
+        command: ["./api-server"]
+        args:
+          - "--host=0.0.0.0"
+          - "--port=8080"
+          - "--blockchain-rpc=ws://thai-energy-validator-headless:9944"
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: RUST_LOG
+          value: "info"
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: thai-energy-secrets
+              key: database-password
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: thai-energy-secrets
+              key: api-key
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: thai-energy-secrets
+              key: jwt-secret
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+        - name: logs-volume
+          mountPath: /app/logs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: thai-energy-config
+      - name: logs-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thai-energy-api-service
+  namespace: thai-energy-trading
+  labels:
+    app: thai-energy-trading
+    component: api-server
+spec:
+  selector:
+    app: thai-energy-trading
+    component: api-server
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  type: ClusterIP
