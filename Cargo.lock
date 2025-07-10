@@ -298,6 +298,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
+name = "fastrand"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -418,7 +424,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "criterion",
- "pallet-compliance",
+ "fastrand",
  "pallet-energy-trading",
  "pallet-hybrid-architecture",
  "pallet-token-system",
@@ -506,17 +512,6 @@ name = "oorandom"
 version = "11.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6790f58c7ff633d8771f42965289203411a5e5c68388703c06e14f24770b41e"
-
-[[package]]
-name = "pallet-compliance"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "pallet-energy-trading",
- "pallet-token-system",
- "serde",
- "serde_json",
-]
 
 [[package]]
 name = "pallet-energy-trading"

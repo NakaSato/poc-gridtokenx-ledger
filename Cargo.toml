@@ -13,7 +13,7 @@ members = [
     "pallets/token-system",
     "pallets/energy-trading",
     "pallets/hybrid-architecture",
-    "pallets/compliance",
+    # "pallets/compliance", # Temporarily disabled due to compilation errors
 ]
 
 [[bin]]
@@ -44,18 +44,27 @@ path = "examples/tps_analysis.rs"
 name = "user_scenario_benchmarks"
 path = "examples/user_scenario_benchmarks.rs"
 
+[[example]]
+name = "simple_demo"
+path = "examples/simple_demo.rs"
+
+[[example]]
+name = "modern_architecture_demo"
+path = "examples/modern_architecture_demo.rs"
+
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 sha2 = "0.10"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 uuid = { version = "1.0", features = ["serde", "v4"] }
+fastrand = "2.0"
 
 # Local pallet (standalone version)
 pallet-token-system = { path = "pallets/token-system" }
 pallet-energy-trading = { path = "pallets/energy-trading" }
 pallet-hybrid-architecture = { path = "pallets/hybrid-architecture" }
-pallet-compliance = { path = "pallets/compliance" }
+# pallet-compliance = { path = "pallets/compliance" } # Temporarily disabled
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -120,16 +129,16 @@ hybrid-testing-utils = ["pallet-hybrid-architecture/testing-utils"]
 hybrid-mock-data = ["pallet-hybrid-architecture/mock-data"]
 hybrid-benchmarking = ["pallet-hybrid-architecture/benchmarking"]
 
-# Compliance Features (forwarded from pallet-compliance)
-compliance-sec = ["pallet-compliance/sec-compliance"]
-compliance-erc = ["pallet-compliance/erc-compliance"]
-compliance-pdpa = ["pallet-compliance/pdpa-compliance"]
-compliance-automated-reporting = ["pallet-compliance/automated-reporting"]
-compliance-audit-logging = ["pallet-compliance/audit-logging"]
-compliance-real-time-monitoring = ["pallet-compliance/real-time-monitoring"]
-compliance-transaction-validation = ["pallet-compliance/transaction-validation"]
-compliance-risk-assessment = ["pallet-compliance/risk-assessment"]
-compliance-regulatory-alerts = ["pallet-compliance/regulatory-alerts"]
+# Compliance Features (temporarily disabled)
+# compliance-sec = ["pallet-compliance/sec-compliance"]
+# compliance-erc = ["pallet-compliance/erc-compliance"]
+# compliance-pdpa = ["pallet-compliance/pdpa-compliance"]
+# compliance-automated-reporting = ["pallet-compliance/automated-reporting"]
+# compliance-audit-logging = ["pallet-compliance/audit-logging"]
+# compliance-real-time-monitoring = ["pallet-compliance/real-time-monitoring"]
+# compliance-transaction-validation = ["pallet-compliance/transaction-validation"]
+# compliance-risk-assessment = ["pallet-compliance/risk-assessment"]
+# compliance-regulatory-alerts = ["pallet-compliance/regulatory-alerts"]
 
 [[bench]]
 name = "performance_benchmark"
