@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for Thai Energy Trading System
 # Stage 1: Build stage
-FROM rust:1.75-bullseye as builder
+FROM rust:1.82-bullseye AS builder
 
 # Install required system dependencies
 RUN apt-get update && apt-get install -y \
@@ -22,12 +22,16 @@ COPY pallets/ ./pallets/
 # Create a dummy main.rs to build dependencies
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 
+# Copy benches directory for benchmarks
+COPY benches/ ./benches/
+
 # Build dependencies (this will be cached)
 RUN cargo build --release && rm -rf src
 
 # Copy the actual source code
 COPY src/ ./src/
 COPY examples/ ./examples/
+COPY benches/ ./benches/
 
 # Build the actual application
 RUN cargo build --release

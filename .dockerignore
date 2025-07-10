@@ -1,0 +1,43 @@
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Build artifacts
+target/
+# Note: Keep Cargo.lock as it's needed for Docker builds
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+docs/
+
+# Configuration files (except docker config)
+*.env
+*.env.local
+*.env.example
+
+# Test files
+test_*.sh
+*.test
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
