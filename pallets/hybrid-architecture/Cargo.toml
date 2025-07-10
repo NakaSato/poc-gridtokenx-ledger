@@ -1,0 +1,70 @@
+[package]
+name = "pallet-hybrid-architecture"
+version = "1.0.0"
+edition = "2021"
+authors = ["Thailand Energy Trading Team"]
+description = "Hybrid blockchain architecture pallet with three-layer system: Public, Consortium, and Oracle chains"
+license = "Apache-2.0"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["serde", "v4"] }
+thiserror = "2.0.12"
+
+# Local dependencies
+pallet-token-system = { path = "../token-system" }
+pallet-energy-trading = { path = "../energy-trading" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+
+[features]
+default = ["std", "public-chain", "consortium-chain", "oracle-gateway", "cross-chain", "compliance"]
+std = []
+
+# Core Architecture Features
+public-chain = []                      # Enable public governance chain
+consortium-chain = []                  # Enable consortium energy trading chain
+oracle-gateway = []                    # Enable oracle data gateway
+cross-chain = []                       # Enable cross-chain integration
+integration-bridge = ["cross-chain"]   # Cross-chain bridge functionality
+
+# Advanced Features
+compliance = []                        # Thai regulatory compliance
+governance-integration = ["public-chain"] # Governance system integration
+energy-trading-integration = ["consortium-chain", "cross-chain"] # Energy trading integration
+oracle-integration = ["oracle-gateway", "cross-chain"] # Oracle data integration
+
+# Security Features
+access-control = []                    # Enhanced access control
+audit-logging = []                     # Comprehensive audit logging
+transaction-validation = []            # Enhanced transaction validation
+multi-signature = []                   # Multi-signature support
+
+# Performance Features
+performance-optimized = []             # Performance optimizations
+batch-processing = []                  # Batch transaction processing
+async-processing = []                  # Asynchronous processing
+caching = []                          # Result caching
+
+# Monitoring Features
+metrics = []                          # Performance metrics
+health-checks = []                    # System health monitoring
+alerting = []                         # System alerting
+
+# Development and Testing
+testing-utils = []                    # Testing utilities
+mock-data = []                        # Mock data generation
+benchmarking = []                     # Performance benchmarking
+
+# Thai Regulatory Features
+sec-compliance = ["compliance"]        # SEC Thailand compliance
+erc-compliance = ["compliance"]        # ERC Thailand compliance
+pdpa-compliance = ["compliance"]       # PDPA compliance
+automated-reporting = ["compliance"]   # Automated compliance reporting
+
+[lib]
+name = "pallet_hybrid_architecture"
+path = "src/lib.rs"

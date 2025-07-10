@@ -418,7 +418,9 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "criterion",
+ "pallet-compliance",
  "pallet-energy-trading",
+ "pallet-hybrid-architecture",
  "pallet-token-system",
  "serde",
  "serde_json",
@@ -506,12 +508,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6790f58c7ff633d8771f42965289203411a5e5c68388703c06e14f24770b41e"
 
 [[package]]
+name = "pallet-compliance"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "pallet-energy-trading",
+ "pallet-token-system",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "pallet-energy-trading"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "pallet-token-system",
  "serde",
+ "thiserror",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
+name = "pallet-hybrid-architecture"
+version = "1.0.0"
+dependencies = [
+ "chrono",
+ "pallet-energy-trading",
+ "pallet-token-system",
+ "serde",
+ "serde_json",
  "thiserror",
  "tokio",
  "uuid",

@@ -12,6 +12,8 @@ members = [
     ".",
     "pallets/token-system",
     "pallets/energy-trading",
+    "pallets/hybrid-architecture",
+    "pallets/compliance",
 ]
 
 [[bin]]
@@ -30,6 +32,18 @@ path = "examples/energy_trading_demo_fixed.rs"
 name = "simple_feature_demo"
 path = "examples/simple_feature_demo.rs"
 
+[[example]]
+name = "performance_focused_test"
+path = "examples/performance_focused_test.rs"
+
+[[example]]
+name = "tps_analysis"
+path = "examples/tps_analysis.rs"
+
+[[example]]
+name = "user_scenario_benchmarks"
+path = "examples/user_scenario_benchmarks.rs"
+
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 sha2 = "0.10"
@@ -40,6 +54,8 @@ uuid = { version = "1.0", features = ["serde", "v4"] }
 # Local pallet (standalone version)
 pallet-token-system = { path = "pallets/token-system" }
 pallet-energy-trading = { path = "pallets/energy-trading" }
+pallet-hybrid-architecture = { path = "pallets/hybrid-architecture" }
+pallet-compliance = { path = "pallets/compliance" }
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
@@ -74,6 +90,46 @@ rate-limiting = ["pallet-energy-trading/rate-limiting"]
 performance-optimized = ["pallet-energy-trading/performance-optimized"]
 memory-efficient = ["pallet-energy-trading/memory-efficient"]
 batch-processing = ["pallet-energy-trading/batch-processing"]
+
+# Hybrid Architecture Features (forwarded from pallet-hybrid-architecture)
+hybrid-public-chain = ["pallet-hybrid-architecture/public-chain"]
+hybrid-consortium-chain = ["pallet-hybrid-architecture/consortium-chain"]
+hybrid-oracle-gateway = ["pallet-hybrid-architecture/oracle-gateway"]
+hybrid-cross-chain = ["pallet-hybrid-architecture/cross-chain"]
+hybrid-integration-bridge = ["pallet-hybrid-architecture/integration-bridge"]
+hybrid-compliance = ["pallet-hybrid-architecture/compliance"]
+hybrid-governance-integration = ["pallet-hybrid-architecture/governance-integration"]
+hybrid-energy-trading-integration = ["pallet-hybrid-architecture/energy-trading-integration"]
+hybrid-oracle-integration = ["pallet-hybrid-architecture/oracle-integration"]
+hybrid-sec-compliance = ["pallet-hybrid-architecture/sec-compliance"]
+hybrid-erc-compliance = ["pallet-hybrid-architecture/erc-compliance"]
+hybrid-pdpa-compliance = ["pallet-hybrid-architecture/pdpa-compliance"]
+hybrid-automated-reporting = ["pallet-hybrid-architecture/automated-reporting"]
+hybrid-access-control = ["pallet-hybrid-architecture/access-control"]
+hybrid-audit-logging = ["pallet-hybrid-architecture/audit-logging"]
+hybrid-transaction-validation = ["pallet-hybrid-architecture/transaction-validation"]
+hybrid-multi-signature = ["pallet-hybrid-architecture/multi-signature"]
+hybrid-performance-optimized = ["pallet-hybrid-architecture/performance-optimized"]
+hybrid-batch-processing = ["pallet-hybrid-architecture/batch-processing"]
+hybrid-async-processing = ["pallet-hybrid-architecture/async-processing"]
+hybrid-caching = ["pallet-hybrid-architecture/caching"]
+hybrid-metrics = ["pallet-hybrid-architecture/metrics"]
+hybrid-health-checks = ["pallet-hybrid-architecture/health-checks"]
+hybrid-alerting = ["pallet-hybrid-architecture/alerting"]
+hybrid-testing-utils = ["pallet-hybrid-architecture/testing-utils"]
+hybrid-mock-data = ["pallet-hybrid-architecture/mock-data"]
+hybrid-benchmarking = ["pallet-hybrid-architecture/benchmarking"]
+
+# Compliance Features (forwarded from pallet-compliance)
+compliance-sec = ["pallet-compliance/sec-compliance"]
+compliance-erc = ["pallet-compliance/erc-compliance"]
+compliance-pdpa = ["pallet-compliance/pdpa-compliance"]
+compliance-automated-reporting = ["pallet-compliance/automated-reporting"]
+compliance-audit-logging = ["pallet-compliance/audit-logging"]
+compliance-real-time-monitoring = ["pallet-compliance/real-time-monitoring"]
+compliance-transaction-validation = ["pallet-compliance/transaction-validation"]
+compliance-risk-assessment = ["pallet-compliance/risk-assessment"]
+compliance-regulatory-alerts = ["pallet-compliance/regulatory-alerts"]
 
 [[bench]]
 name = "performance_benchmark"

@@ -77,7 +77,7 @@ fn benchmark_transaction_throughput(c: &mut Criterion) {
                         energy_market.place_order(buy_order).unwrap();
                         
                         // Process trades
-                        energy_market.match_orders(&mut token_system);
+                        energy_market.match_orders();
                         
                         // Create blockchain transactions
                         for trade in &energy_market.matched_trades {
@@ -120,7 +120,7 @@ fn benchmark_order_book_operations(c: &mut Criterion) {
                         let order = EnergyOrder::new(
                             format!("user_{}", i),
                             if i % 2 == 0 { OrderType::Buy } else { OrderType::Sell },
-                            (10.0 + (i as f64 % 50.0)), // Varying energy amounts
+                            10.0 + (i as f64 % 50.0), // Varying energy amounts
                             0.10 + (i as f64 % 100.0) * 0.001, // Varying prices
                         );
                         energy_market.place_order(order).unwrap();
@@ -143,42 +143,37 @@ fn benchmark_blockchain_validation(c: &mut Criterion) {
             BenchmarkId::new("chain_validation", block_count),
             block_count,
             |b, &block_count| {
-                b.iter_setup(
-                    || {
-                        let mut blockchain = Blockchain::new();
-                        let mut token_system = TokenSystem::new();
+                let mut blockchain = Blockchain::new();
+                let mut token_system = TokenSystem::new();
+                
+                // Create test accounts
+                for i in 0..10 {
+                    let address = format!("user_{}", i);
+                    token_system.create_user_account(address.clone()).unwrap();
+                    token_system.mint_watt_tokens(&address, 1000.0).unwrap();
+                }
+                
+                // Create blocks with transactions
+                for block_idx in 0..block_count {
+                    for tx_idx in 0..10 {
+                        let from = format!("user_{}", tx_idx % 10);
+                        let to = format!("user_{}", (tx_idx + 1) % 10);
                         
-                        // Create test accounts
-                        for i in 0..10 {
-                            let address = format!("user_{}", i);
-                            token_system.create_user_account(address.clone()).unwrap();
-                            token_system.mint_watt_tokens(&address, 1000.0).unwrap();
-                        }
-                        
-                        // Create blocks with transactions
-                        for block_idx in 0..*block_count {
-                            for tx_idx in 0..10 {
-                                let from = format!("user_{}", tx_idx % 10);
-                                let to = format!("user_{}", (tx_idx + 1) % 10);
-                                
-                                let transaction = crate::block::Transaction::new(
-                                    from,
-                                    to,
-                                    10.0, // energy amount
-                                    0.15, // price
-                                    crate::block::TransactionType::EnergyTrade,
-                                );
-                                blockchain.create_transaction(transaction);
-                            }
-                            blockchain.mine_pending_transactions(&format!("miner_{}", block_idx));
-                        }
-                        
-                        blockchain
-                    },
-                    |blockchain| {
-                        blockchain.is_chain_valid()
-                    },
-                );
+                        let transaction = Transaction::new(
+                            from,
+                            to,
+                            10.0, // energy amount
+                            0.15, // price
+                            TransactionType::EnergyTrade,
+                        );
+                        blockchain.create_transaction(transaction);
+                    }
+                    blockchain.mine_pending_transactions(&format!("miner_{}", block_idx));
+                }
+                
+                b.iter(|| {
+                    blockchain.is_chain_valid()
+                });
             },
         );
     }
@@ -222,7 +217,6 @@ pub fn load_test_concurrent_transactions(
         
         let handle = thread::spawn(move || {
             let user_address = format!("user_{}", user_id);
-            let target_address = format!("user_{}", (user_id + 1) % concurrent_users);
             
             let mut transaction_counter = 0u64;
             let user_start = Instant::now();
@@ -244,7 +238,7 @@ pub fn load_test_concurrent_transactions(
                     {
                         let mut em = energy_market_clone.lock().unwrap();
                         em.place_order(order)?;
-                        em.match_orders(&mut token_system_clone.lock().unwrap());
+                        em.match_orders();
                     }
                     
                     // Create blockchain transactions for completed trades

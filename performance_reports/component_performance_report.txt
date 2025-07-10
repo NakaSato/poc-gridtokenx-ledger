@@ -1,0 +1,50 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/examples/performance_focused_test`
+🚀 Energy Trading Blockchain Performance Analysis
+================================================
+
+📊 Test 1: Order Book Performance (No Mining)
+----------------------------------------------
+Running 10000 order book operations...
+📈 Order Book Operations Results:
+  • TPS: 328736.50
+  • Error Rate: 0.000%
+  • Average Latency: 0.00 ms
+  • P95 Latency: 0.01 ms
+  • P99 Latency: 0.02 ms
+  • Total Operations: 10000
+  • Failed Operations: 0
+  • Duration: 0.03 seconds
+  • TPS Rating: ✅ EXCELLENT
+  • Error Rate: ✅ EXCELLENT
+  • Matched Trades: 9349
+  • Pending Buy Orders: 307
+  • Pending Sell Orders: 144
+
+---
+
+📊 Test 2: Token System Performance
+------------------------------------
+Running 10000 token system operations...
+📈 Token Transfers Results:
+  • TPS: 776472.87
+  • Error Rate: 0.000%
+  • Average Latency: 0.00 ms
+  • P95 Latency: 0.00 ms
+  • P99 Latency: 0.00 ms
+  • Total Operations: 10000
+  • Failed Operations: 0
+  • Duration: 0.01 seconds
+  • TPS Rating: ✅ EXCELLENT
+  • Error Rate: ✅ EXCELLENT
+  • User Accounts: 100
+  • Sample Balance (user_0): 10000.00 WATT
+
+---
+
+📊 Test 3: Blockchain Processing Performance
+--------------------------------------------
+Running 1000 blockchain transactions...
+Block mined: 000013df617378362b3a2030dd780565ab86e2fd558af0e171b8d56cca53fe50
+Block mined: 00007428e541a15ec0fc67bb851eb23862a679f18d28a9080d80992156ce79c6
+Block mined: 00002e638bab40f13d017eef6d488779e763bb1cf0a58fec1166af0669adc078
